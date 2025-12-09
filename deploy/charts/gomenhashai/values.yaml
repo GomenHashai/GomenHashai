@@ -16,7 +16,7 @@ image:
   # -- Image tag to use, default to appVersion
   tag: ""
   # -- Image digest to use
-  digest: "sha256:75dec07996b338ba12d6986657a22ac560d7b3a4712fb53a4ab02f1aeca9b4d8"
+  digest: "sha256:16448688541eeeaba118540fead60e242a30528db04805122feff1c51358bd50"
   # -- Image pull policy
   pullPolicy: IfNotPresent
 
