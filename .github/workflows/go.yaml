@@ -133,7 +133,7 @@ jobs:
           go-version-file: go.mod
 
       - name: Run gosec
-        uses: securego/gosec@ade0e8f43211688a78923300c495e4f42f156608 # master
+        uses: securego/gosec@e2fa6ab0ba09771b9205dd0cafa997a2f730f582 # master
         with:
           args: '-fmt=sarif -out=results.sarif ./...'
 
