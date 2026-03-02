@@ -85,7 +85,7 @@ jobs:
       - name: Generate artifact attestation
         if: ${{ steps.cr.outcome == 'success' && steps.cr.outputs.changed_charts != '' }}
         id: attest
-        uses: actions/attest-build-provenance@977bb373ede98d70efdf65b84cb5f73e068dcc2a # v3.0.0
+        uses: actions/attest-build-provenance@a2bbfa25375fe432b6a289bc6b6cd05ecd0c4c32 # v4.1.0
         with:
           subject-path: ${{ steps.find_release.outputs.chart }}
 
