@@ -26,12 +26,10 @@ import (
 	"github.com/GomenHashai/gomenhashai/internal/metrics"
 	corev1 "k8s.io/api/core/v1"
 	apierrors "k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/runtime/schema"
 	"k8s.io/apimachinery/pkg/util/validation/field"
 	ctrl "sigs.k8s.io/controller-runtime"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
-	"sigs.k8s.io/controller-runtime/pkg/webhook"
 	"sigs.k8s.io/controller-runtime/pkg/webhook/admission"
 )
 
@@ -39,27 +37,21 @@ var podlog = logf.Log.WithName("pod-resource")
 
 // SetupPodWebhookWithManager registers the webhook for Pod in the manager.
 func SetupPodWebhookWithManager(mgr ctrl.Manager) error {
-	return ctrl.NewWebhookManagedBy(mgr).For(&corev1.Pod{}).
-		WithValidator(&PodCustomValidator{}).
-		WithDefaulter(&PodCustomDefaulter{}).
+	return ctrl.NewWebhookManagedBy(mgr, &corev1.Pod{}).
+		WithDefaulter(&PodDefaulter{}).
+		WithValidator(&PodValidator{}).
 		Complete()
 }
 
-// PodCustomDefaulter struct is responsible for setting default values on the custom resource of the
-type PodCustomDefaulter struct {
+// PodDefaulter struct is responsible for setting default values on the custom resource of the
+type PodDefaulter struct {
 	// TODO(user): Add more fields as needed for defaulting
 }
 
-var _ webhook.CustomDefaulter = &PodCustomDefaulter{}
+var _ admission.Defaulter[*corev1.Pod] = &PodDefaulter{}
 
 // Default implements webhook.CustomDefaulter so a webhook will be registered for the Kind Pod.
-func (d *PodCustomDefaulter) Default(ctx context.Context, obj runtime.Object) error {
-	pod, ok := obj.(*corev1.Pod)
-
-	if !ok {
-		return fmt.Errorf("a wild exception appeared! GomenHashai is confused...😵 webhook expected a Pod object for the obj but got %T", obj)
-	}
-
+func (d *PodDefaulter) Default(ctx context.Context, pod *corev1.Pod) error {
 	podlog.Info("[🐾IntegrityPatrol] start mutation 🥷", "pod", pod.GetName())
 
 	metrics.GomenhashaiMutationTotal.Inc()
@@ -154,27 +146,23 @@ func AddContainerImageDigest(inContainers []corev1.Container, podName string) []
 }
 
 // PodCustomValidator struct is responsible for validating the Pod resource
-type PodCustomValidator struct {
+type PodValidator struct {
 	// TODO(user): Add more fields as needed for validation
 }
 
-var _ webhook.CustomValidator = &PodCustomValidator{}
+var _ admission.Validator[*corev1.Pod] = &PodValidator{}
 
 // ValidateCreate implements webhook.CustomValidator so a webhook will be registered for the type Pod.
-func (v *PodCustomValidator) ValidateCreate(ctx context.Context, obj runtime.Object) (admission.Warnings, error) {
+func (v *PodValidator) ValidateCreate(ctx context.Context, obj *corev1.Pod) (admission.Warnings, error) {
 	return ValidatePod(obj)
 }
 
 // ValidateUpdate implements webhook.CustomValidator so a webhook will be registered for the type Pod.
-func (v *PodCustomValidator) ValidateUpdate(ctx context.Context, oldObj, newObj runtime.Object) (admission.Warnings, error) {
+func (v *PodValidator) ValidateUpdate(ctx context.Context, oldObj, newObj *corev1.Pod) (admission.Warnings, error) {
 	return ValidatePod(newObj)
 }
 
-func ValidatePod(obj runtime.Object) (admission.Warnings, error) {
-	pod, ok := obj.(*corev1.Pod)
-	if !ok {
-		return nil, fmt.Errorf("a wild exception appeared! GomenHashai is confused...😵 webhook expected a Pod object for the obj but got %T", obj)
-	}
+func ValidatePod(pod *corev1.Pod) (admission.Warnings, error) {
 	podlog.Info("[🐾IntegrityPatrol] start in~spec~tion 🔍", "pod", pod.GetName())
 
 	metrics.GomenhashaiValidationTotal.Inc()
@@ -274,7 +262,7 @@ func ValidatePod(obj runtime.Object) (admission.Warnings, error) {
 }
 
 // ValidateDelete implements webhook.CustomValidator so a webhook will be registered for the type Pod.
-func (v *PodCustomValidator) ValidateDelete(ctx context.Context, obj runtime.Object) (admission.Warnings, error) {
+func (v *PodValidator) ValidateDelete(ctx context.Context, obj *corev1.Pod) (admission.Warnings, error) {
 	// Do nothing on delete
 	return nil, nil
 }

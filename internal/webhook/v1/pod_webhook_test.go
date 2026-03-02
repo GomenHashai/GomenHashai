@@ -33,8 +33,8 @@ var _ = Describe("Pod Webhook", func() {
 		containersTrusted    []corev1.Container
 		containersNotTrusted []corev1.Container
 		containersExempted   []corev1.Container
-		validator            PodCustomValidator
-		defaulter            PodCustomDefaulter
+		validator            PodValidator
+		defaulter            PodDefaulter
 		mutatedContainers    []corev1.Container
 		containers           []corev1.Container
 		pod                  corev1.Pod
@@ -67,9 +67,9 @@ var _ = Describe("Pod Webhook", func() {
 				Image: "test/redis:test",
 			},
 		}
-		validator = PodCustomValidator{}
+		validator = PodValidator{}
 		Expect(validator).NotTo(BeNil(), "Expected validator to be initialized")
-		defaulter = PodCustomDefaulter{}
+		defaulter = PodDefaulter{}
 		Expect(defaulter).NotTo(BeNil(), "Expected defaulter to be initialized")
 	})
 
