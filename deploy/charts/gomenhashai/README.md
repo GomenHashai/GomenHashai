@@ -1,6 +1,6 @@
 # gomenhashai
 
-![Version: 1.3.3](https://img.shields.io/badge/Version-1.3.3-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.3.3](https://img.shields.io/badge/AppVersion-v1.3.3-informational?style=flat-square)
+![Version: 1.3.4](https://img.shields.io/badge/Version-1.3.4-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v1.3.3](https://img.shields.io/badge/AppVersion-v1.3.3-informational?style=flat-square)
 
 Keep your Kubernetes cluster safe by ensuring all container's images use digests from a trusted set. GomenHashai verifies image integrity and gently apologizes as it gracefully denies or terminates pods that don't meet the standard. Gomen Hashai~ 🙇
 
