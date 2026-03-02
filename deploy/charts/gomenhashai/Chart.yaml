@@ -6,7 +6,7 @@ description: |
   Built with security 🛡️ in mind, 🍣 GomenHashai ships with strong default protections.
 type: application
 version: 1.3.3
-appVersion: "v1.3.2"
+appVersion: "v1.3.3"
 keywords:
   - security
   - integrity
